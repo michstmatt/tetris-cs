@@ -24,7 +24,7 @@ namespace Tetris.Models
             this.UnmovedTime = 0;
         }
 
-        public void RotateLeft()
+        public virtual void RotateLeft()
         {
             var orient = (int)(this.Orientation);
             orient = this.Orientation == OrientationEnum.DOWN ? ((int)OrientationEnum.RIGHT) : orient + 1;
@@ -37,9 +37,11 @@ namespace Tetris.Models
                 cell.X = xNew;
                 cell.Y = yNew;
             }
+
+            UpdateInBounds();
         }
 
-        public void RotateRight()
+        public virtual void RotateRight()
         {
             var orient = (int)(this.Orientation);
             orient = this.Orientation == OrientationEnum.RIGHT ? ((int)OrientationEnum.DOWN) : orient - 1;
@@ -51,11 +53,31 @@ namespace Tetris.Models
                 cell.X = xNew;
                 cell.Y = yNew;
             }
+
+            UpdateInBounds();
         }
 
         public void HorizontalMove(bool right)
         {
             this.X += right ? 1 : -1;
+        }
+
+        private void UpdateInBounds(int minCol = 0, int maxCol = 10)
+        {
+            foreach(var c in Cells)
+            {
+                // too far left, move right
+                if (this.X + c.X < minCol)
+                {
+                    this.X -= c.X;
+                    break;
+                }
+                if (this.X + c.X >= maxCol)
+                {
+                    this.X -= c.X ;
+                    break;
+                }
+            }
         }
 
         public void MoveDown(int maxY)

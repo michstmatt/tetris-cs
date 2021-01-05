@@ -63,10 +63,10 @@ namespace Tetris.Models
             Color = Color.Blue;
             Cells = new List<Cell>()
             {
-                new Cell{Y = -1, X = -1},
-                new Cell{Y = 0, X = -1},
+                new Cell{Y = -1, X = 0},
+                new Cell{Y = 0, X = 0},
+                new Cell{Y = 1, X = 0},
                 new Cell{Y = 1, X = -1},
-                new Cell{Y = 1, X = -2},
             };
 
         }
@@ -80,12 +80,11 @@ namespace Tetris.Models
             Color = Color.Orange;
             Cells = new List<Cell>()
             {
-                new Cell{Y = -1, X = -1},
-                new Cell{Y = 0, X = -1},
-                new Cell{Y = 1, X = -1},
+                new Cell{Y = -1, X = 0},
+                new Cell{Y = 0, X = 0},
                 new Cell{Y = 1, X = 0},
+                new Cell{Y = 1, X = 1},
             };
-
         }
     }
 
@@ -105,6 +104,8 @@ namespace Tetris.Models
                 new Cell{Y = 0, X =  0},
             };
         }
+        public override void RotateRight(){}
+        public override void RotateLeft(){}
     }
     
     class Straight : AbstractBlock
@@ -116,10 +117,10 @@ namespace Tetris.Models
             Color = Color.LightBlue;
             Cells = new List<Cell>()
             {
-                new Cell{Y = -2, X = -1},
-                new Cell{Y = -1, X = -1},
-                new Cell{Y = 0, X = -1},
-                new Cell{Y = 1, X =  -1},
+                new Cell{Y = -2, X = 0},
+                new Cell{Y = -1, X = 0},
+                new Cell{Y = 0, X = 0},
+                new Cell{Y = 1, X = 0},
             };
         }
     }

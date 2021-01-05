@@ -62,35 +62,27 @@ namespace Tetris.Models
 
         public void Update()
         {
-            bool rowRemoved = false;
             for (int r = Rows - 1; r >= ViewableRows; r--)
             {
                 bool fullRow = true;
-                bool emptyRow = true;
                 for (int c = 0; c < Columns; c++)
                 {
                     fullRow &= this.Cells[r][c] != null;
-                    emptyRow &= this.Cells[r][c] == null; 
-                }
-                if(emptyRow)
-                {
-                    break;
                 }
 
-                if (fullRow || rowRemoved)
+                if (fullRow)
                 {
                     this.Cells.RemoveAt(r);
                     this.Cells.Insert(0, new Color?[Columns]);
+                    r++;
                 }
-                r += fullRow ? 1 : 0;
-                rowRemoved = fullRow;
             }
         }
         public void DrawCells(SpriteBatch spriteBatch, int cellSize = 10)
         {
 
             spriteBatch.Draw(Tetris.Graphics.Textures.Cell, Position, new Rectangle(0, 0, Columns * cellSize, ViewableRows * cellSize), Color.White);
-            spriteBatch.Draw(Tetris.Graphics.Textures.Cell, Position, new Rectangle(2, 2, Columns * cellSize - 1, ViewableRows * cellSize - 1), Color.Black);
+            spriteBatch.Draw(Tetris.Graphics.Textures.Cell, Position + new Vector2(1,1), new Rectangle(1, 1, Columns * cellSize - 2, ViewableRows * cellSize - 2), Color.Black);
 
             for (int row = ViewableRows; row < Rows; row++)
             {
@@ -101,7 +93,7 @@ namespace Tetris.Models
                         var adjustedRow = row - ViewableRows;
                         var cellPos = Position + new Vector2(col * cellSize, adjustedRow * cellSize);
                         spriteBatch.Draw(Tetris.Graphics.Textures.Cell, cellPos, new Rectangle(0, 0, cellSize, cellSize), Color.White);
-                        spriteBatch.Draw(Tetris.Graphics.Textures.Cell, cellPos, new Rectangle(1, 1, cellSize - 1, cellSize - 1), Cells[row][col].Value);
+                        spriteBatch.Draw(Tetris.Graphics.Textures.Cell, cellPos + new Vector2(1,1), new Rectangle(0, 0, cellSize - 2, cellSize - 2), Cells[row][col].Value);
                     }
                 }
             }

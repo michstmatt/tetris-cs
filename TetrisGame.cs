@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
@@ -16,7 +17,10 @@ namespace Tetris
         private SpriteBatch _spriteBatch;
 
         private Board board;
-        private AbstractBlock currBlock;
+        private BlockQueue queue;
+        private AbstractBlock currBlock; 
+        private AbstractBlock holdBlock;
+        private HoldBlock holdBlockDisplay;
         private Queue<AbstractBlock> nextBlocks;
         private InputManager inputManager;
         private bool paused;
@@ -37,8 +41,14 @@ namespace Tetris
 
             base.Initialize();
             paused = false;
-            var position = new Vector2(GraphicsDevice.Viewport.Width / 2, 0);
+            var position = new Vector2(GraphicsDevice.Viewport.Width / 2, 20);
             board = new Board();
+            queue = new BlockQueue();
+            holdBlockDisplay = new HoldBlock();
+
+            queue.Position = position + new Vector2(board.Size.X /2  + 20, 0);
+            holdBlockDisplay.Position = position - new Vector2(board.Size.X , 0);
+
             nextBlocks = new Queue<AbstractBlock>();
             board.Position = position - new Vector2(board.Size.X / 2, 0);
 
@@ -76,11 +86,17 @@ namespace Tetris
 
         public void HoldBlock()
         {
-            var tmp = nextBlocks.Dequeue();
-            currBlock.X = 5;
-            currBlock.Y = 0;
-            nextBlocks.Enqueue(currBlock);
+            var tmp = holdBlock;
+            if(holdBlock == null)
+            {
+                tmp = nextBlocks.Dequeue();
+                AddBlock();
+            }
+            holdBlock = currBlock;
+            holdBlock.X = 5;
+            holdBlock.Y = 0;
             currBlock = tmp;
+            holdBlockDisplay.Block = holdBlock;
         }
 
         protected override void Update(GameTime gameTime)
@@ -130,6 +146,8 @@ namespace Tetris
                     board.Update();
                 }
             }
+            queue.Blocks = nextBlocks.ToList();
+
             base.Update(gameTime);
         }
 
@@ -140,6 +158,8 @@ namespace Tetris
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
             board.DrawCells(_spriteBatch, 20);
+            queue.DrawCells(_spriteBatch, 20);
+            holdBlockDisplay.DrawCells(_spriteBatch, 20);
             _spriteBatch.End();
             base.Draw(gameTime);
         }

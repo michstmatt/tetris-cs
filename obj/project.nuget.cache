@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "ekQJeR+XlYfmN1n799gXIUvQVHyWZuad7qvDaisPv3KakBkYXkku6MxOrvArb9tK4rYmVBp2ZEmR7ammIn25sg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\personal\\Projects\\Tetris\\Tetris.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\personal\\.nuget\\packages\\monogame.content.builder.task\\3.8.0.1641\\monogame.content.builder.task.3.8.0.1641.nupkg.sha512",
+    "C:\\Users\\personal\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.0.1641\\monogame.framework.desktopgl.3.8.0.1641.nupkg.sha512",
+    "C:\\Users\\personal\\.nuget\\packages\\microsoft.netcore.app.ref\\3.1.0\\microsoft.netcore.app.ref.3.1.0.nupkg.sha512",
+    "C:\\Users\\personal\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\3.1.0\\microsoft.windowsdesktop.app.ref.3.1.0.nupkg.sha512",
+    "C:\\Users\\personal\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.1.10\\microsoft.aspnetcore.app.ref.3.1.10.nupkg.sha512",
+    "C:\\Users\\personal\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.1.10\\microsoft.netcore.app.host.win-x64.3.1.10.nupkg.sha512"
+  ],
+  "logs": []
+}
