@@ -89,7 +89,7 @@ namespace Tetris.Models
         public void Update(float time)
         {
             UnmovedTime += this.lastY == Y ? 1 : 0;
-            if(UnmovedTime > 125)
+            if(UnmovedTime > 75)
             {
                 IsSet = true;
             }

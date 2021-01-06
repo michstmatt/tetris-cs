@@ -179,11 +179,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Users\\personal\\Projects\\Tetris\\Tetris.csproj",
+      "projectUniqueName": "C:\\Users\\personal\\Projects\\Tetris\\Tetris.csproj",
       "projectName": "Tetris",
-      "projectPath": "c:\\Users\\personal\\Projects\\Tetris\\Tetris.csproj",
+      "projectPath": "C:\\Users\\personal\\Projects\\Tetris\\Tetris.csproj",
       "packagesPath": "C:\\Users\\personal\\.nuget\\packages\\",
-      "outputPath": "c:\\Users\\personal\\Projects\\Tetris\\obj\\",
+      "outputPath": "C:\\Users\\personal\\Projects\\Tetris\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\personal\\AppData\\Roaming\\NuGet\\NuGet.Config"

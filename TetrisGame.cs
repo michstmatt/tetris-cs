@@ -17,11 +17,12 @@ namespace Tetris
         private SpriteBatch _spriteBatch;
 
         private Board board;
-        private BlockQueue queue;
+        //private BlockQueue queue;
         private AbstractBlock currBlock; 
         private AbstractBlock holdBlock;
         private HoldBlock holdBlockDisplay;
-        private Queue<AbstractBlock> nextBlocks;
+        private HoldBlock nextBlockDisplay;
+        private Queue<AbstractBlock> blockQueue;
         private InputManager inputManager;
         private bool paused;
 
@@ -43,13 +44,13 @@ namespace Tetris
             paused = false;
             var position = new Vector2(GraphicsDevice.Viewport.Width / 2, 20);
             board = new Board();
-            queue = new BlockQueue();
+            nextBlockDisplay = new HoldBlock();
             holdBlockDisplay = new HoldBlock();
 
-            queue.Position = position + new Vector2(board.Size.X /2  + 20, 0);
+            nextBlockDisplay.Position = position + new Vector2(board.Size.X /2  + 20, 0);
             holdBlockDisplay.Position = position - new Vector2(board.Size.X , 0);
 
-            nextBlocks = new Queue<AbstractBlock>();
+            blockQueue = new Queue<AbstractBlock>();
             board.Position = position - new Vector2(board.Size.X / 2, 0);
 
             for (int i = 0; i < 5; i++)
@@ -57,7 +58,7 @@ namespace Tetris
                 AddBlock();
             }
 
-            currBlock = nextBlocks.Dequeue();
+            currBlock = blockQueue.Dequeue();
             board.UpdateBlock(currBlock);
             _lastUpdate = DateTime.Now.ToFileTime();
         }
@@ -65,7 +66,8 @@ namespace Tetris
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            Tetris.Graphics.Textures.Init(GraphicsDevice);
+            var f = Content.Load<SpriteFont>("Font/font");
+            Tetris.Graphics.Textures.Init(GraphicsDevice, f);
 
             // TODO: use this.Content to load your game content here
         }
@@ -81,7 +83,7 @@ namespace Tetris
             if (key == 5) b = new Square(0, 5);
             if (key == 6) b = new Straight(0, 5);
 
-            nextBlocks.Enqueue(b);
+            blockQueue.Enqueue(b);
         }
 
         public void HoldBlock()
@@ -89,7 +91,7 @@ namespace Tetris
             var tmp = holdBlock;
             if(holdBlock == null)
             {
-                tmp = nextBlocks.Dequeue();
+                tmp = blockQueue.Dequeue();
                 AddBlock();
             }
             holdBlock = currBlock;
@@ -131,7 +133,7 @@ namespace Tetris
                 // TODO: Add your update logic here
                 var time = DateTime.Now.ToFileTime();
                 var delta = (time - _lastUpdate) / 10000;
-                if (delta > 1000)
+                if (delta > 400)
                 {
                     _lastUpdate = time;
                     if (board.BlockCanMove(currBlock, 0, 1)) currBlock.MoveDown(1);
@@ -141,12 +143,12 @@ namespace Tetris
 
                 if (currBlock.IsSet)
                 {
-                    currBlock = nextBlocks.Dequeue();
+                    currBlock = blockQueue.Dequeue();
                     AddBlock();
                     board.Update();
                 }
             }
-            queue.Blocks = nextBlocks.ToList();
+            nextBlockDisplay.Block = blockQueue.Peek();
 
             base.Update(gameTime);
         }
@@ -154,12 +156,14 @@ namespace Tetris
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
+            //int cellSize = Math.Min(GraphicsDevice.Viewport.Width / 20, GraphicsDevice.Viewport.Height /10);
+            int cellSize = 20;
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
-            board.DrawCells(_spriteBatch, 20);
-            queue.DrawCells(_spriteBatch, 20);
-            holdBlockDisplay.DrawCells(_spriteBatch, 20);
+            board.DrawCells(_spriteBatch, cellSize);
+            nextBlockDisplay.Draw(_spriteBatch, "Next", cellSize);
+            holdBlockDisplay.Draw(_spriteBatch, "Hold", cellSize);
             _spriteBatch.End();
             base.Draw(gameTime);
         }

@@ -22,7 +22,14 @@ namespace Tetris.Models
             Size = new Vector2(cellSize * Columns, cellSize * Rows);
         }
 
-        public void DrawCells(SpriteBatch spriteBatch, int cellSize = 10)
+        public void Draw(SpriteBatch spriteBatch, string title, int cellSize = 10)
+        {
+            this.DrawCells(spriteBatch, cellSize);
+            var pos = this.Position + new Vector2(0, cellSize*4);
+            spriteBatch.DrawString(Tetris.Graphics.Textures.Font, title, pos, Color.White);
+        }
+
+        private void DrawCells(SpriteBatch spriteBatch, int cellSize)
         {
 
             spriteBatch.Draw(Tetris.Graphics.Textures.Cell, Position, new Rectangle(0, 0, Columns * cellSize, cellSize * Rows), Color.White);
@@ -34,8 +41,8 @@ namespace Tetris.Models
             {
                 cellPos.X = (cell.X + 2) * cellSize + Position.X;
                 cellPos.Y = (cell.Y + 2) * cellSize + Position.Y;
-                spriteBatch.Draw(Tetris.Graphics.Textures.Cell, cellPos, new Rectangle(0, 0, cellSize, cellSize), Color.White);
-                spriteBatch.Draw(Tetris.Graphics.Textures.Cell, cellPos, new Rectangle(1, 1, cellSize - 1, cellSize - 1), Block.Color);
+
+                Cell.DrawCell(spriteBatch, cellPos, cellSize, Block.Color);
             }
 
 

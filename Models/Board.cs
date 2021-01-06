@@ -92,8 +92,7 @@ namespace Tetris.Models
                     {
                         var adjustedRow = row - ViewableRows;
                         var cellPos = Position + new Vector2(col * cellSize, adjustedRow * cellSize);
-                        spriteBatch.Draw(Tetris.Graphics.Textures.Cell, cellPos, new Rectangle(0, 0, cellSize, cellSize), Color.White);
-                        spriteBatch.Draw(Tetris.Graphics.Textures.Cell, cellPos + new Vector2(1,1), new Rectangle(0, 0, cellSize - 2, cellSize - 2), Cells[row][col].Value);
+                        Cell.DrawCell(spriteBatch, cellPos, cellSize, Cells[row][col].Value);
                     }
                 }
             }
