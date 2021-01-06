@@ -50,8 +50,46 @@ namespace Tetris.Models
             }
             return allowed;
         }
+
+        public bool BlockCanRotate(AbstractBlock block, bool right)
+        {
+            return true;
+        }
+
+        public void BlockPreview(AbstractBlock block)
+        {
+            var minY = 0;
+            var selectedX = 0;
+            foreach (Cell c in block.Cells)
+            {
+                var y = c.Y;
+                if (y > minY)
+                {
+                    selectedX = c.X;
+                }
+            }
+
+            var bottom = 0;
+            for(int r = block.Y + minY; r < Rows; r++)
+            {
+                bottom = r-1;
+                if(this.Cells[r][selectedX + block.X] != null)
+                {
+                    break;
+                }
+            }
+
+            foreach (Cell c in block.Cells)
+            {
+                var y = bottom + c.Y + ViewableRows;
+                var x = c.X + block.X;
+                this.Cells[y][x] = Color.LightGray;
+            }
+
+        }
         public void UpdateBlock(AbstractBlock block)
         {
+            UpdateInBounds(block);
             foreach (Cell c in block.Cells)
             {
                 var y = block.Y + c.Y + ViewableRows;
@@ -59,15 +97,49 @@ namespace Tetris.Models
                 this.Cells[y][x] = block.Color;
             }
         }
-
-        public void Update()
+        private void UpdateInBounds(AbstractBlock block)
         {
+            foreach(var c in block.Cells)
+            {
+                var y = block.Y + c.Y + ViewableRows;
+                var x = c.X + block.X;
+                // too far left, move right
+                if (x < 0 || this.Cells[y][x] != null)
+                {
+                    block.X -= c.X;
+                    break;
+                }
+                if (x >= this.Columns || this.Cells[y][x] != null)
+                {
+                    block.X -= c.X ;
+                    break;
+                }
+            }
+        }
+
+        public bool DidLose()
+        {
+            for (int c = 0; c < Columns; c++)
+            {
+                if (this.Cells[ViewableRows - 1][c] != null)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public int Update()
+        {
+            int rowsCleared = 0;
             for (int r = Rows - 1; r >= ViewableRows; r--)
             {
                 bool fullRow = true;
+                bool emptyRow = true;
                 for (int c = 0; c < Columns; c++)
                 {
                     fullRow &= this.Cells[r][c] != null;
+                    emptyRow &= this.Cells[r][c] == null;
                 }
 
                 if (fullRow)
@@ -75,8 +147,14 @@ namespace Tetris.Models
                     this.Cells.RemoveAt(r);
                     this.Cells.Insert(0, new Color?[Columns]);
                     r++;
+                    rowsCleared ++;
+                }
+                else if(emptyRow)
+                {
+                    break;
                 }
             }
+            return rowsCleared;
         }
         public void DrawCells(SpriteBatch spriteBatch, int cellSize = 10)
         {

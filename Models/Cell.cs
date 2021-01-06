@@ -13,7 +13,7 @@ namespace Tetris.Models
         public static void DrawCell(SpriteBatch spriteBatch, Vector2 truePosition, int size, Color color, Color? borderColor = null)
         {
             int borderSize = size / 10;
-            spriteBatch.Draw(Tetris.Graphics.Textures.Cell, truePosition, new Rectangle(0, 0, size, size), borderColor ?? Color.White);
+            //spriteBatch.Draw(Tetris.Graphics.Textures.Cell, truePosition, new Rectangle(0, 0, size, size), borderColor ?? Color.White);
             spriteBatch.Draw(Tetris.Graphics.Textures.Cell, truePosition + new Vector2(borderSize, borderSize), new Rectangle(0, 0, size - 2*borderSize, size - 2*borderSize), color);
         }
     }

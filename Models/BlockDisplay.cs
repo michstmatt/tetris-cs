@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Tetris.Models
 {
-    public class HoldBlock
+    public class BlockDisplay
     {
 
         private const int Columns = 4;
@@ -17,7 +17,7 @@ namespace Tetris.Models
 
         public AbstractBlock Block { get; set; }
 
-        public HoldBlock(int cellSize = 20)
+        public BlockDisplay(int cellSize = 20)
         {
             Size = new Vector2(cellSize * Columns, cellSize * Rows);
         }

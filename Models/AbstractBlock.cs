@@ -38,7 +38,6 @@ namespace Tetris.Models
                 cell.Y = yNew;
             }
 
-            UpdateInBounds();
         }
 
         public virtual void RotateRight()
@@ -54,30 +53,11 @@ namespace Tetris.Models
                 cell.Y = yNew;
             }
 
-            UpdateInBounds();
         }
 
         public void HorizontalMove(bool right)
         {
             this.X += right ? 1 : -1;
-        }
-
-        private void UpdateInBounds(int minCol = 0, int maxCol = 10)
-        {
-            foreach(var c in Cells)
-            {
-                // too far left, move right
-                if (this.X + c.X < minCol)
-                {
-                    this.X -= c.X;
-                    break;
-                }
-                if (this.X + c.X >= maxCol)
-                {
-                    this.X -= c.X ;
-                    break;
-                }
-            }
         }
 
         public void MoveDown(int maxY)
@@ -88,8 +68,8 @@ namespace Tetris.Models
         }
         public void Update(float time)
         {
-            UnmovedTime += this.lastY == Y ? 1 : 0;
-            if(UnmovedTime > 75)
+            UnmovedTime += this.lastY == Y ? time : 0;
+            if(UnmovedTime > 2000)
             {
                 IsSet = true;
             }

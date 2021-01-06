@@ -18,15 +18,24 @@ namespace Tetris
 
         private Board board;
         //private BlockQueue queue;
+        private int score = 0;
+        private float speed = 1.0f;
+        private TimeSpan totalTime;
+        private float blockUpdateDelta = 1000;
+    
+        private bool gameLost = false;
+
+        private Scoreboard scoreboard;
+
         private AbstractBlock currBlock; 
         private AbstractBlock holdBlock;
-        private HoldBlock holdBlockDisplay;
-        private HoldBlock nextBlockDisplay;
+        private BlockDisplay holdBlockDisplay;
+        private BlockDisplay nextBlockDisplay;
         private Queue<AbstractBlock> blockQueue;
         private InputManager inputManager;
         private bool paused;
 
-        private long _lastUpdate;
+        private TimeSpan _lastUpdate;
 
         public TetrisGame()
         {
@@ -44,11 +53,15 @@ namespace Tetris
             paused = false;
             var position = new Vector2(GraphicsDevice.Viewport.Width / 2, 20);
             board = new Board();
-            nextBlockDisplay = new HoldBlock();
-            holdBlockDisplay = new HoldBlock();
+            nextBlockDisplay = new BlockDisplay();
+            holdBlockDisplay = new BlockDisplay();
+            scoreboard = new Scoreboard();
 
             nextBlockDisplay.Position = position + new Vector2(board.Size.X /2  + 20, 0);
             holdBlockDisplay.Position = position - new Vector2(board.Size.X , 0);
+
+
+            scoreboard.Position = position + new Vector2(board.Size.X /2  + 20, nextBlockDisplay.Size.Y + 200);
 
             blockQueue = new Queue<AbstractBlock>();
             board.Position = position - new Vector2(board.Size.X / 2, 0);
@@ -60,7 +73,7 @@ namespace Tetris
 
             currBlock = blockQueue.Dequeue();
             board.UpdateBlock(currBlock);
-            _lastUpdate = DateTime.Now.ToFileTime();
+            _lastUpdate = TimeSpan.FromSeconds(0);
         }
 
         protected override void LoadContent()
@@ -110,7 +123,7 @@ namespace Tetris
 
             if(state.isPausePressed) paused = !paused;
 
-            if (!paused)
+            if (!paused && !gameLost)
             {
                 board.ClearBlock(currBlock);
 
@@ -131,21 +144,26 @@ namespace Tetris
 
 
                 // TODO: Add your update logic here
-                var time = DateTime.Now.ToFileTime();
-                var delta = (time - _lastUpdate) / 10000;
-                if (delta > 400)
+                var time = gameTime.TotalGameTime; 
+                var delta = time - _lastUpdate;
+                totalTime += gameTime.ElapsedGameTime;
+
+
+                if (delta.TotalMilliseconds > blockUpdateDelta)
                 {
                     _lastUpdate = time;
                     if (board.BlockCanMove(currBlock, 0, 1)) currBlock.MoveDown(1);
                 }
-                currBlock.Update(delta);
+
+                currBlock.Update((float)gameTime.ElapsedGameTime.TotalMilliseconds);
                 board.UpdateBlock(currBlock);
 
                 if (currBlock.IsSet)
                 {
                     currBlock = blockQueue.Dequeue();
                     AddBlock();
-                    board.Update();
+                    score += board.Update();
+                    gameLost = board.DidLose();
                 }
             }
             nextBlockDisplay.Block = blockQueue.Peek();
@@ -164,6 +182,16 @@ namespace Tetris
             board.DrawCells(_spriteBatch, cellSize);
             nextBlockDisplay.Draw(_spriteBatch, "Next", cellSize);
             holdBlockDisplay.Draw(_spriteBatch, "Hold", cellSize);
+            scoreboard.Draw(_spriteBatch, (int)totalTime.TotalSeconds, score);
+
+            if (paused)
+            {
+                _spriteBatch.DrawString(Tetris.Graphics.Textures.Font, "Paused", new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height /2), Color.White);
+            }
+            else if (gameLost)
+            {
+                _spriteBatch.DrawString(Tetris.Graphics.Textures.Font, "You Lost", new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height /2), Color.Red);
+            }
             _spriteBatch.End();
             base.Draw(gameTime);
         }
